@@ -1,29 +1,170 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="app-wrapper">
+    <div class="app">
+      <Navigation v-if="!navigation" />
+      <router-view />
+    </div>
+  </div>
 </template>
 
+<script>
+import Navigation from './components/Navigation.vue';
+export default {
+  name: "app",
+  components: { Navigation },
+  data() {
+    return {
+      navigation: null
+    };
+  },
+  created() { 
+    //check if I need this
+    this.checkRoute()
+  },
+  mounted() { },
+  methods: {
+    checkRoute(){
+      let routes = ['Login', 'Register', 'ForgetPassword']
+
+      if(routes.includes(this.$route.name)){
+        this.navigation = true;
+      }else{
+        this.navigation = false;
+      }
+    }
+  },
+  watch: {
+    $route(){
+      this.checkRoute()
+    }
+  },
+};
+</script>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
 }
 
-nav {
-  padding: 30px;
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+}
 
-    &.router-link-exact-active {
-      color: #42b983;
+.link {
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: black;
+}
+
+.link-light {
+  color: #fff;
+}
+.arrow {
+  margin-left: 8px;
+  width: 12px;
+
+  filter: invert(0%) sepia(82%) saturate(7500%) hue-rotate(3deg) brightness(87%) contrast(115%);
+}
+
+.arrow-light {
+  filter:invert(99%) sepia(2%) saturate(118%) hue-rotate(182deg) brightness(116%) contrast(100%);
+}
+
+button,
+.router-button {
+  transition: 500ms ease all;
+  cursor: pointer;
+  margin-top: 24px;
+  padding: 12px 24px;
+  background-color: #303030;
+  color: #fff;
+  border-radius: 20px;
+  border: none;
+  text-transform: uppercase;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: rgba(48, 48, 48, 0.7);
+  }
+}
+
+.button-ghost {
+  color: #000;
+  padding: 0;
+  border-radius: 0;
+  margin-top: 50px;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: transparent;
+
+  @media (min-width: 700px) {
+    margin-top: 0;
+    margin-left: auto;
+  }
+
+  i {
+    margin-left: 8px;
+  }
+}
+
+.button-light {
+  background-color: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.button-inactive {
+  pointer-events: none !important;
+  cursor: none !important;
+  background-color: rgba(128, 128, 128, 0.5) !important;
+}
+
+.error {
+  text-align: center;
+  font-size: 12px;
+  color: red;
+}
+
+.blog-card-wrap {
+  position: relative;
+  padding: 80px 16px;
+  background-color: #f1f1f1;
+
+  @media (min-width: 500px) {
+    padding: 100px 16px;
+  }
+
+  .blog-cards {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 500px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 900px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1200px) {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 }
