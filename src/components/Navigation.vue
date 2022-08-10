@@ -11,6 +11,37 @@
                     <router-link class="link" to="#">Post</router-link>
                     <router-link class="link" to="/login">Login/Register</router-link>
                 </ul>
+                <div class="profile" ref="profile">
+                    <span>{{ this.store.state.profileInitials }}</span>
+                    <div class="profile-menu">
+                        <div class="info">
+                            <p class="initials">{{ this.store.state.profileInitials }}</p>
+                            <div class="right">
+                                <p>{{ this.store.state.profileFirstName }} {{ this.store.state.profileLastName }}</p>
+                                <p>{{ this.store.state.profileUsername }}</p>
+                                <p>{{ this.store.state.profileEmail }}</p>
+                            </div>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <router-link class="option" to="#">
+                                    <img :src="userIcon" class="icon" />
+                                    <p>Profile</p>
+                                </router-link>
+                            </div>
+                            <div class="option">
+                                <router-link class="option" to="#">
+                                    <img :src="adminIcon" class="icon" />
+                                    <p>Admin</p>
+                                </router-link>
+                            </div>
+                            <div class="option" to="#">
+                                <img :src="signOutIcon" class="icon" />
+                                <p>Sign Out</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
         <!-- can make this it's own component -->
@@ -29,10 +60,23 @@
 </template>
 <script>
 import menuIcon from "@/assets/Icons/bars-regular.svg"
+import userIcon from "@/assets/Icons/user-alt-light.svg"
+import adminIcon from "@/assets/Icons/user-crown-light.svg"
+import signOutIcon from "@/assets/Icons/sign-out-alt-regular.svg"
+
+import { useStore } from 'vuex'
+
+//auth test
+import { onAuthStateChanged } from "firebase/auth";
+import {auth, db} from '../firebase/config'
+import { doc, getDoc } from "firebase/firestore";
+
 export default {
     name: "Navigation",
     setup(){
-        return {menuIcon}
+        const store = useStore()
+
+        return {menuIcon, userIcon, adminIcon, signOutIcon, store}
     },  
     data(){
         return {
@@ -41,9 +85,18 @@ export default {
             windowWidth: null
         }
     },
-    created(){
+    async created(){
         window.addEventListener('resize', this.checkScreen);
-        this.checkScreen()
+        this.checkScreen();
+
+        //test auth
+        const docRef = doc(db, "users", auth.currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()){
+            console.log(docSnap.data())
+        }
+
     },
     methods:{
         checkScreen(){
@@ -62,6 +115,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
 
 header {
     background-color: #fff;
@@ -184,6 +238,7 @@ header {
                             .icon {
                                 width: 18px;
                                 height: auto;
+                                filter: invert(99%) sepia(2%) saturate(118%) hue-rotate(182deg) brightness(116%) contrast(100%);
                             }
 
                             p {

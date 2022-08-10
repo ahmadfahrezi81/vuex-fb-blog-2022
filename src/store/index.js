@@ -1,4 +1,13 @@
 import { createStore } from "vuex";
+import { auth, db } from "../firebase/config";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 export default createStore({
     state: {
@@ -25,13 +34,40 @@ export default createStore({
             },
         ],
         editPost: null,
+        user: null,
+        profileAdmin: null,
+        profileEmail: null,
+        profileFirstName: null,
+        profileLastName: null,
+        profileUsername: null,
+        profileId: null,
+        profileNameInitials: null,
     },
     getters: {},
     mutations: {
         toggleEditPost(state, payload) {
             state.editPost = payload;
         },
+        setProfileInfo(state, doc) {
+            state.profileEmail = doc.data().email;
+            state.profileFirstName = doc.data().firstName;
+            state.profileLastName = doc.data().lastName;
+            state.profileUsername = doc.data().username;
+            state.profileId = doc.id;
+        },
+        setProfileNameInitials(state) {
+            //might not work
+            //diffrent than tutorial
+            state.profileNameInitials =
+                state.profileFirstName.charAt(0) +
+                state.profileLastName.charAt(0);
+        },
     },
-    actions: {},
+    actions: {
+        getCurrentUser({ commit }, userData) {
+            commit("setProfileInfo", userData);
+            commit("setProfileNameInitials");
+        },
+    },
     modules: {},
 });

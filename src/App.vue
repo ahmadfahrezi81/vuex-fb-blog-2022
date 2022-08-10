@@ -19,12 +19,13 @@ export default {
   },
   created() { 
     //check if I need this
-    this.checkRoute()
+    this.checkRoute();
+    console.log(this.$store.state)
   },
   mounted() { },
   methods: {
     checkRoute(){
-      let routes = ['Login', 'Register', 'ForgetPassword']
+      let routes = ['Login', 'Register', 'ForgotPassword']
 
       if(routes.includes(this.$route.name)){
         this.navigation = true;

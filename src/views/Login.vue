@@ -15,11 +15,12 @@
                     <input type="text" placeholder="Password" v-model="password">
                     <img :src="Password" alt="svg" class="icon">
                 </div>
+                <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
             <router-link class="forgot-password" to="/forgot-password">
                 Forgot your password?
             </router-link>
-            <button @click.prevent="">Sign In</button>
+            <button @click.prevent="login">Sign In</button>
             <div class="angle"></div>
         </form>
         <div class="background"></div>
@@ -29,6 +30,12 @@
 import Email from "@/assets/Icons/envelope-regular.svg"
 import Password from "@/assets/Icons/lock-alt-solid.svg"
 
+//MOVE AUTH TO VUEX
+
+//auth
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from '../firebase/config'
+
 export default {
     name:'Login',
     setup(){
@@ -36,10 +43,26 @@ export default {
     },
     data(){
         return{
-            email: null,
-            password: null
+            email: "",
+            password: "",
+            error: null,
+            errorMsg: "",
         }
-    }
+    },
+    methods: {
+        login(){
+            signInWithEmailAndPassword(auth, this.email, this.password)
+                .then((userCredential)=>{
+                    this.$router.push('/');
+                    this.error = false;
+                    this.errorMsg = ""
+                    console.log(userCredential.user.uid)
+                }).catch((err)=>{
+                    this.error = true;
+                    this.errorMsg = err.message
+                })
+        }
+    },
 }
 </script>
 <style lang="scss">
